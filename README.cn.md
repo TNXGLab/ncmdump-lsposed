@@ -2,7 +2,7 @@
 
 Ncmdump LSPosed 是一个 Android/Kotlin LSPosed 模块，内置一个很小的 Rust JNI crate。它会监听网易云音乐已经写入完成的 `.ncm` 下载文件，并转换为普通 `.mp3` 或 `.flac` 文件。
 
-仓库根目录是 Android 项目。我们自己的 Rust 代码位于 `rust/crates/ncmdump-android`，上游 `ncmdump.rs` 通过 Git submodule 链接到 `rust/ncmdump.rs`。
+仓库根目录是 Android 项目。我们自己的 Rust JNI crate 位于 `rust/ncmdump-android`，上游 `ncmdump.rs` 通过 Git submodule 链接到 `rust/ncmdump.rs`。
 
 ## 功能
 
@@ -27,7 +27,7 @@ Ncmdump LSPosed 是一个 Android/Kotlin LSPosed 模块，内置一个很小的 
 app/                           Android LSPosed 模块
 app/src/main/jniLibs/          内嵌 Rust native libraries
 rust/Cargo.toml                我们自己的 JNI crate 小 workspace
-rust/crates/ncmdump-android/   我们的 Android JNI crate
+rust/ncmdump-android/          我们的 Android JNI crate
 rust/ncmdump.rs/               上游 ncmdump.rs Git submodule
 scripts/build-android-libs.sh  构建 Rust libraries 到 app/src/main/jniLibs
 ```
@@ -66,6 +66,17 @@ gradle :app:assembleRelease
 
 ```plaintext
 app/build/outputs/apk/release/app-release-unsigned.apk
+```
+
+## Release
+
+GitHub Actions 会在每次 push 和 pull request 时执行构建校验。
+
+推送版本 tag 会自动创建 GitHub Release，并上传按架构区分的 APK，以及对应架构的单独 `.so` 文件：
+
+```shell
+git tag v0.1.0
+git push origin v0.1.0
 ```
 
 ## 使用

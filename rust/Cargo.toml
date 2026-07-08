@@ -1,5 +1,5 @@
 [workspace]
-members = ["crates/ncmdump-android"]
+members = ["ncmdump-android"]
 exclude = ["ncmdump.rs"]
 resolver = "2"
 

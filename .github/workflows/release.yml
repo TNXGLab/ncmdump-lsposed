@@ -1,0 +1,113 @@
+name: Build and Release
+
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - main
+    tags:
+      - "v*"
+  pull_request:
+    branches:
+      - main
+
+permissions:
+  contents: write
+
+jobs:
+  build:
+    name: Build Android module
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          submodules: recursive
+
+      - name: Set up JDK
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: "17"
+
+      - name: Set up Gradle
+        uses: gradle/actions/setup-gradle@v4
+        with:
+          gradle-version: "9.2.0"
+
+      - name: Set up Android SDK
+        uses: android-actions/setup-android@v3
+
+      - name: Install Android NDK
+        run: sdkmanager "ndk;28.2.13676358"
+
+      - name: Set up Rust
+        uses: dtolnay/rust-toolchain@stable
+        with:
+          targets: aarch64-linux-android,armv7-linux-androideabi,i686-linux-android,x86_64-linux-android
+
+      - name: Cache Rust build
+        uses: Swatinem/rust-cache@v2
+        with:
+          workspaces: rust
+
+      - name: Check Rust JNI crate
+        run: cargo check --manifest-path rust/Cargo.toml -p ncmdump-android
+
+      - name: Build native libraries
+        env:
+          ANDROID_NDK_HOME: ${{ env.ANDROID_HOME }}/ndk/28.2.13676358
+        run: bash scripts/build-android-libs.sh
+
+      - name: Package APKs and native libraries
+        run: |
+          mkdir -p artifacts
+          SAFE_REF_NAME="${GITHUB_REF_NAME//\//-}"
+
+          keytool -genkeypair \
+            -keystore artifacts/debug-release.keystore \
+            -storepass android \
+            -keypass android \
+            -alias androiddebugkey \
+            -keyalg RSA \
+            -keysize 2048 \
+            -validity 10000 \
+            -dname "CN=Android Debug,O=Android,C=US"
+
+          APKSIGNER="$(find "$ANDROID_HOME/build-tools" -name apksigner -type f | sort | tail -n 1)"
+
+          build_and_sign() {
+            local type_name="$1"
+            shift
+            gradle :app:clean :app:assembleRelease "$@"
+            "$APKSIGNER" sign \
+              --ks artifacts/debug-release.keystore \
+              --ks-pass pass:android \
+              --key-pass pass:android \
+              --out "artifacts/ncmdump-lsposed-${SAFE_REF_NAME}-${type_name}-debug-signed.apk" \
+              app/build/outputs/apk/release/app-release-unsigned.apk
+          }
+
+          for abi in arm64-v8a armeabi-v7a x86 x86_64; do
+            build_and_sign "$abi" "-PabiFilter=$abi"
+            cp "app/src/main/jniLibs/$abi/libncmdump_android.so" \
+              "artifacts/libncmdump_android-${SAFE_REF_NAME}-${abi}.so"
+          done
+
+      - name: Upload build artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: ncmdump-lsposed-release-files
+          path: |
+            artifacts/*.apk
+            artifacts/*.so
+
+      - name: Publish GitHub Release
+        if: startsWith(github.ref, 'refs/tags/')
+        uses: softprops/action-gh-release@v2
+        with:
+          files: |
+            artifacts/*.apk
+            artifacts/*.so
+          generate_release_notes: true

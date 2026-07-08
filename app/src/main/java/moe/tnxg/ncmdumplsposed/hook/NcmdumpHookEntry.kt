@@ -1,8 +1,8 @@
-package com.example.ncmdumplsposed.hook
+package moe.tnxg.ncmdumplsposed.hook
 
 import android.app.Activity
 import android.os.FileObserver
-import com.example.ncmdumplsposed.nativebridge.NativeNcmdump
+import moe.tnxg.ncmdumplsposed.nativebridge.NativeNcmdump
 import de.robv.android.xposed.IXposedHookLoadPackage
 import de.robv.android.xposed.XC_MethodHook
 import de.robv.android.xposed.XposedBridge

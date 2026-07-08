@@ -1,4 +1,4 @@
-package com.example.ncmdumplsposed.nativebridge
+package moe.tnxg.ncmdumplsposed.nativebridge
 
 import java.io.IOException
 

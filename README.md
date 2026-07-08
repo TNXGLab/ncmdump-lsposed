@@ -2,7 +2,7 @@
 
 Ncmdump LSPosed is an Android/Kotlin LSPosed module with a small Rust JNI crate. It watches completed NetEase Cloud Music `.ncm` downloads and converts them into normal `.mp3` or `.flac` files.
 
-The repository root is the Android project. Our Rust code lives in `rust/crates/ncmdump-android`, while upstream `ncmdump.rs` is linked as a Git submodule at `rust/ncmdump.rs`.
+The repository root is the Android project. Our Rust JNI crate lives in `rust/ncmdump-android`, while upstream `ncmdump.rs` is linked as a Git submodule at `rust/ncmdump.rs`.
 
 ## Features
 
@@ -27,7 +27,7 @@ The repository root is the Android project. Our Rust code lives in `rust/crates/
 app/                           Android LSPosed module
 app/src/main/jniLibs/          Embedded Rust native libraries
 rust/Cargo.toml                Small Rust workspace for our JNI crate
-rust/crates/ncmdump-android/   Our Android JNI crate
+rust/ncmdump-android/          Our Android JNI crate
 rust/ncmdump.rs/               Upstream ncmdump.rs Git submodule
 scripts/build-android-libs.sh  Builds Rust libraries into app/src/main/jniLibs
 ```
@@ -66,6 +66,17 @@ The unsigned APK is generated at:
 
 ```plaintext
 app/build/outputs/apk/release/app-release-unsigned.apk
+```
+
+## Release
+
+GitHub Actions builds every push and pull request.
+
+Push a version tag to publish a GitHub Release with architecture-specific APKs and matching standalone `.so` files:
+
+```shell
+git tag v0.1.0
+git push origin v0.1.0
 ```
 
 ## Usage

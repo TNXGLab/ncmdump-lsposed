@@ -6,18 +6,23 @@ plugins {
 }
 
 android {
-    namespace = "com.example.ncmdumplsposed"
+    namespace = "moe.tnxg.ncmdumplsposed"
     compileSdk = 35
 
     defaultConfig {
-        applicationId = "com.example.ncmdumplsposed"
+        applicationId = "moe.tnxg.ncmdumplsposed"
         minSdk = 24
         targetSdk = 35
         versionCode = 1
         versionName = "0.1.0"
 
         ndk {
-            abiFilters += listOf("arm64-v8a", "armeabi-v7a", "x86", "x86_64")
+            val abiFilter = providers.gradleProperty("abiFilter").orNull
+            abiFilters += if (abiFilter.isNullOrBlank()) {
+                listOf("arm64-v8a", "armeabi-v7a", "x86", "x86_64")
+            } else {
+                listOf(abiFilter)
+            }
         }
     }
 

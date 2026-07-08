@@ -15,7 +15,7 @@ const UNKNOWN_EXTENSION: &str = "dump";
 const BUFFER_SIZE: usize = 8192;
 
 #[no_mangle]
-pub extern "system" fn Java_com_example_ncmdumplsposed_nativebridge_NativeNcmdump_decryptToSibling(
+pub extern "system" fn Java_moe_tnxg_ncmdumplsposed_nativebridge_NativeNcmdump_decryptToSibling(
     mut env: JNIEnv,
     _class: JClass,
     input_path: JString,
