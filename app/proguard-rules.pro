@@ -1,0 +1,4 @@
+-keep class com.example.ncmdumplsposed.hook.NcmdumpHookEntry { *; }
+-keep class com.example.ncmdumplsposed.nativebridge.NativeNcmdump { *; }
+-keep class de.robv.android.xposed.** { *; }
+-dontwarn de.robv.android.xposed.**

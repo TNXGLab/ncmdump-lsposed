@@ -1,0 +1,20 @@
+[workspace]
+members = ["crates/ncmdump-android"]
+exclude = ["ncmdump.rs"]
+resolver = "2"
+
+[workspace.package]
+version = "0.1.0"
+authors = ["TNXGlab contributors"]
+edition = "2021"
+
+[workspace.dependencies]
+ncmdump = { path = "ncmdump.rs/crates/ncmdump", version = "0.8.0", default-features = false }
+
+[profile.release]
+codegen-units = 1
+incremental = false
+lto = true
+opt-level = "s"
+panic = "abort"
+strip = true

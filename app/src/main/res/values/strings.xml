@@ -1,0 +1,5 @@
+<resources>
+    <string name="app_name">Ncmdump LSPosed</string>
+    <string name="xposed_description">Decrypt NetEase Cloud Music NCM downloads after file writes complete.</string>
+    <string name="module_status">模块已安装。请在 LSPosed 中启用本模块，并将作用域设置为网易云音乐。</string>
+</resources>

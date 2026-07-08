@@ -1,0 +1,14 @@
+[package]
+name = "ncmdump-android"
+version = { workspace = true }
+authors = { workspace = true }
+edition = { workspace = true }
+
+[lib]
+name = "ncmdump_android"
+crate-type = ["cdylib", "staticlib"]
+
+[dependencies]
+jni = { version = "0.21", default-features = false }
+lofty = { version = "0.24", default-features = false }
+ncmdump = { workspace = true, default-features = false, features = ["ncmdump"] }
